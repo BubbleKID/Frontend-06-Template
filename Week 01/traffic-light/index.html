@@ -1,0 +1,42 @@
+<style>
+  .container {
+    display: flex;
+  }
+
+  .light {
+    border-radius: 50%;
+    display: inline-flex;
+    background-color: black;
+    height: 300px;
+    width: 300px;
+  }
+</style>
+
+<div>
+  <div>
+    <div class="light red"></div>
+    <div class="light yellow"></div>
+    <div class="light green"></div>
+  </div>
+  <button onclick="start()">Start</button>
+</div>
+
+<script>
+  function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
+  async function turnOnLight(color, time) {color
+    document.querySelector(`.${color}`).setAttribute('style', `background-color: ${color};`);
+    await sleep(time);
+    document.querySelector(`.${color}`).setAttribute('style', `background-color: black;`);
+  }
+
+  async function start() {
+    while(true) {
+      await turnOnLight('red', 5000);
+      await turnOnLight('yellow', 2000);
+      await turnOnLight('green', 10000);
+    }
+  }
+</script>
