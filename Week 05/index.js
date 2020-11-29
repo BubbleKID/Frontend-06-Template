@@ -1,14 +1,15 @@
 let callbacks = new Map();
+let reactivities = new Map();
 let usedReactivties = [];
 let object = {
-  a: 1,
+  a: {b: 3},
   b: 2
 }
 
 let po = reactive(object);
 
 effect(() => {
-  console.log(po.a);
+  console.log(po.a.b);
 });
 
 function effect(callback) {
@@ -28,7 +29,10 @@ function effect(callback) {
 }
 
 function reactive(object) {
-  return new Proxy(object, {
+  if(reactivities.has(object))
+    return reactivities.get(object);
+
+  let proxy = new Proxy(object, {
     set(obj, prop, val) {
       obj[prop] = val;
       if(callbacks.get(obj))
@@ -40,10 +44,16 @@ function reactive(object) {
     },
     get(obj, prop) {
       usedReactivties.push([obj, prop]);
+      if(typeof obj[prop] === "object")
+        return reactive(obj[prop]);
+
       return obj[prop];
     }
   });
+
+  reactivities.set(object, proxy);
+  return proxy;
 }
 
-po.a = 1;
-po.b = 2;
+po.a.b = 4; //级连
+po.a = {b:5}; 
