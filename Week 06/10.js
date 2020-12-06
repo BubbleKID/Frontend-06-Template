@@ -1,0 +1,5 @@
+Class Human{
+  hurt(damage){
+   
+  }
+}
